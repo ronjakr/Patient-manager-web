@@ -1,0 +1,78 @@
+@page "/add-patient"
+@using PatientManager.Services
+@using PatientManager.Models
+@inject PatientService patientService
+
+<h3>Add New Patient</h3>
+
+<EditForm Model="@newPatient" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <!-- Patient Name -->
+    <div class="mb-3">
+        <label for="name" class="form-label">Patient Name</label>
+        <InputText id="name" class="form-control" @bind-Value="newPatient.Name" />
+    </div>
+    <!-- Patient date of birth  -->
+    <div class="mb-3">
+        <label for="date of birth" class="form-label">Date of Birth</label>
+        <InputDate id="date of birth" class="form-control" @bind-Value="newPatient.DateOfBirth" />
+    </div>
+    <!-- Patient Date of Birth - Three separate fields (Day, Month, Year) -->
+    @* <div class="mb-3 d-flex justify-content-between">
+        <div class="input-group">
+            <label for="day" class="form-label">Day</label>
+            <InputText id="day" class="form-control" @bind-Value="dayInput" />
+        </div>
+        <div class="input-group">
+            <label for="month" class="form-label">Month</label>
+            <InputText id="month" class="form-control" @bind-Value="monthInput" />
+        </div>
+        <div class="input-group">
+            <label for="year" class="form-label">Year</label>
+            <InputText id="year" class="form-control" @bind-Value="yearInput" />
+        </div>
+    </div> *@
+
+
+    <!-- Patient Medical Condition(s) -->
+    <div class="mb-3">
+        <label for="conditions" class="form-label">Conditions</label>
+        <InputText id="conditions" class="form-control" @bind-Value="conditionsInput" />
+    </div>
+
+    <!-- Submit Button -->
+    <button type="submit" class="btn btn-primary">Add Patient</button>
+</EditForm>
+
+@code {
+    // Create a model for the new patient
+    private Patient newPatient = new Patient();
+    private string conditionsInput = string.Empty;  // Temporary input string for conditions
+    @* private string dayInput = string.Empty;
+    private string monthInput = string.Empty;
+    private string yearInput = string.Empty; *@
+
+    // Handle the valid form submission
+    private void HandleValidSubmit()
+    {
+        // If there are conditions provided, convert the string to a list
+        if (!string.IsNullOrWhiteSpace(conditionsInput))
+        {
+            newPatient.Conditions = conditionsInput
+                                        .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                                        .Select(c => c.Trim())  // Trim spaces around each condition
+                                        .ToList();
+        }
+
+        // Save the new patient
+        patientService.AddPatient(newPatient);
+        Console.WriteLine($"New Patient Added: {newPatient.Name}, Date of Birth: {newPatient.DateOfBirth}, Conditions: {string.Join(", ", newPatient.Conditions)}");
+
+        // Clear form
+        newPatient = new Patient();  // Reset form fields
+        conditionsInput = string.Empty;
+
+    }
+}

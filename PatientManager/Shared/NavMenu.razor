@@ -1,0 +1,64 @@
+﻿<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">Patient Manager</a>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <nav class="flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> Home
+            </NavLink>
+        </div>
+        <!-- Add New Patient Link -->
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="add-patient">
+                Add New Patient
+            </NavLink>
+        </div>
+        
+        <!-- Show All Patients Link -->
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="show-all-patients">
+                Show All Patients
+            </NavLink>
+        </div>
+
+        <!-- Search for Patient Link -->
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="search-patient">
+                Search for Patient
+            </NavLink>
+        </div>
+
+        <!-- Update Patient Information Link -->
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="update-patient">
+                Update Patient Conditions
+            </NavLink>
+        </div>
+
+        <!-- Delete Patient Link -->
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="delete-patient">
+                Delete Patient
+            </NavLink>
+        </div>
+    </nav>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}
+

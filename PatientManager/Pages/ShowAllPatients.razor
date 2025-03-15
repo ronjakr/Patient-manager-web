@@ -1,0 +1,29 @@
+@page "/show-all-patients"
+@using PatientManager.Services
+@using PatientManager.Models
+@inject PatientService patientService
+
+<h3>All Patients</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Patient ID</th>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Conditions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var patient in patientService.GetAllPatients())
+        {
+            <tr>
+                <td>@patient.Id</td>
+                <td>@patient.Name</td>
+                <td>@patientService.CalculateAge(patient.DateOfBirth)</td>
+                <td>@string.Join(", ", patient.Conditions)</td>
+            </tr>
+        }
+    </tbody>
+</table>
+

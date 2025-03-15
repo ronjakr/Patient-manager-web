@@ -1,0 +1,72 @@
+@* @page "/search-patient"
+@using PatientManager.Services
+@using PatientManager.Models
+@inject PatientService patientService
+
+<h3>Search Patients</h3>
+
+<div class="mb-3">
+    <label for="searchByName" class="form-label">Search by Name:</label>
+    <InputText id="searchByName" class="form-control" @bind-Value="searchName" />
+</div>
+
+<div class="mb-3">
+    <label for="searchById" class="form-label">Search by ID:</label>
+    <InputNumber id="searchById" class="form-control" @bind-Value="searchId" />
+</div>
+
+<button class="btn btn-primary" @onclick="SearchPatients">Search</button>
+
+<h4>Search Result:</h4>
+
+@if (searchedPatient != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Patient ID</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Conditions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@searchedPatient.Id</td>
+                <td>@searchedPatient.Name</td>
+                <td>@patientService.CalculateAge(searchedPatient.DateOfBirth)</td>
+                <td>@string.Join(", ", searchedPatient.Conditions)</td>
+            </tr>
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No patient found matching your search.</p>
+}
+
+@code {
+    private string searchName = string.Empty;
+    private int searchId;
+    private Patient searchedPatient;
+
+    // Search for a patient by name or ID
+    private void SearchPatients()
+    {
+        if (!string.IsNullOrWhiteSpace(searchName))
+        {
+            // Search by name
+            searchedPatient = patientService.GetPatientByName(searchName);
+        }
+        else if (searchId > 0)
+        {
+            // Search by ID
+            searchedPatient = patientService.GetPatientById(searchId);
+        }
+        else
+        {
+            // If no search criteria is provided, clear the result
+            searchedPatient = null;
+        }
+    }
+} *@
