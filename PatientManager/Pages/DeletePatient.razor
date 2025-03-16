@@ -9,7 +9,7 @@
 
 <input type="number" @bind="patientId" placeholder="Patient ID"/>
 <button type="submit" @onclick="DeletePatientById">Delete Patient</button>
-<button type="submit" @onclick="ClearInput">Clear</button>
+@* <button type="submit" @onclick="ClearInput">Clear</button> *@
 
 @if (isDeleted)
 {
@@ -78,9 +78,9 @@ else if (isFailed)
         }
     }
 
-    private void ClearInput()
+    @* private void ClearInput()
     {
         patientId = null;
         isDeleted = false;
-    }
+    } *@
 }
