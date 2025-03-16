@@ -27,19 +27,6 @@ namespace PatientManager.Services
             return patients.FirstOrDefault(p => p.Name.Contains(name, StringComparison.OrdinalIgnoreCase));
         }
 
-        // public bool UpdatePatient(int id, Patient updatedPatient)
-        // {
-        //     var patient = GetPatientById(id);
-        //     if (patient != null)
-        //     {
-        //         patient.Name = updatedPatient.Name;
-        //         patient.DateOfBirth = updatedPatient.DateOfBirth;
-        //         patient.Conditions = updatedPatient.Conditions;
-        //         return true;
-        //     }
-        //     return false;
-        // }
-
         // Delete a patient by Id
         public bool DeletePatient(int id)
         {
