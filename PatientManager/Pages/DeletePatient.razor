@@ -1,0 +1,55 @@
+@page "/delete-patient"
+@using PatientManager.Services
+@using PatientManager.Models
+@inject PatientService patientService
+
+<h3>Delete Patient</h3>
+
+<p>Enter the ID of the patient to be deleted </p>
+
+<input type="number" @bind="patientId" placeholder="Patient ID"/>
+<button @onclick="DeletePatientById">Delete Patient</button>
+
+
+@if (isDeleted)
+{
+    <h4>deleted patient:</h4>
+    <p>Name: @deletedPatient.Name</p>
+    <p>Date of Birth: @deletedPatient.DateOfBirth.ToString("dd/MM/yyyy")</p>
+    <p>Age: @patientService.CalculateAge(deletedPatient.DateOfBirth)</p>
+    <p>Conditions: @string.Join(", ", deletedPatient.Conditions)</p>
+}
+else if (isFailed)
+{
+    <p style="color: red;">Patient not found. Please check the ID and try again.</p>
+}
+
+@code {
+    private int? patientId = null;
+    private bool isDeleted = false;
+    private bool isFailed = false;
+    private Patient deletedPatient = null;
+
+    private void DeletePatientById()
+    {
+        // do nothing if button is clicked without providing id
+        if (!patientId.HasValue)
+        {
+            return;
+        }
+
+        // retrieve details of patient to delete
+        var patient = patientService.GetPatientById(patientId.Value);
+        if (patient != null)  // patient exists
+        {
+            var isSuccess = patientService.DeletePatient(patientId.Value);
+            deletedPatient = patient;  // Store the deleted patient information
+            isDeleted = true;
+        }
+
+        else
+        {
+            isFailed = true;
+        }
+    }
+}

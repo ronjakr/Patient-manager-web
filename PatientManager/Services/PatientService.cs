@@ -40,17 +40,17 @@ namespace PatientManager.Services
         //     return false;
         // }
 
-        // // Delete a patient by Id
-        // public bool DeletePatient(int id)
-        // {
-        //     var patient = GetPatientById(id);
-        //     if (patient != null)
-        //     {
-        //         patients.Remove(patient);
-        //         return true;
-        //     }
-        //     return false;
-        // }
+        // Delete a patient by Id
+        public bool DeletePatient(int id)
+        {
+            var patient = GetPatientById(id);
+            if (patient != null)
+            {
+                patients.Remove(patient);
+                return true;    // patient successfully removed
+            }
+            return false;   // patient not found
+        }
 
         public int CalculateAge(DateTime dateOfBirth)
         {
