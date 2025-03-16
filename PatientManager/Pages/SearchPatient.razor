@@ -10,17 +10,17 @@
     <div class="search-item mb-5">
         <p>Search for pasient by entering pasient's ID</p>
         <input type="number" @bind="searchId" placeholder="ID"/>
-        <button @onclick="SearchById">Search</button>
+        <button type="submit" @onclick="SearchById">Search</button>
     </div>
 
     <div class="search-item mb-5">
         <p>Search for pasient by entering pasient's name</p>
         <input type="string" @bind="searchName" placeholder="Name"/>
-        <button @onclick="SearchByName">Search</button>
+        <button type="submit" @onclick="SearchByName">Search</button>
     </div>
 
     <div class="search-item mb-5">
-        <button @onclick="ClearSearch">Clear Search</button>
+        <button type="submit" @onclick="ClearSearch">Clear Search</button>
     </div>
 </div>
 
@@ -47,7 +47,30 @@
             </tr>
         </tbody>
     </table>
-    
+
+    <div class="mt-5">
+        <h5>Add/delete Conditions</h5>
+        <div class="mb-3">
+            <input type="text" class="form-control mb-3" @bind="conditionsInput" placeholder="Enter conditions" />
+
+            <button @onclick="AddConditions">Add Conditions</button>
+            <button @onclick="DeleteConditions">Delete Conditions</button>
+        </div>
+
+        <!-- Display current conditions -->
+        @if(isUpdated)
+        {
+            <div class="mt-3">
+                <h6>Conditions updated to:</h6>
+                <ul>
+                    @foreach (var condition in searchedPatient.Conditions)
+                    {
+                        <li>@condition</li>
+                    }
+                </ul>
+            </div>
+        }
+    </div>    
 }
 else if (isFailed)
 {
@@ -67,8 +90,10 @@ else if (isInvalidName)
     private bool isFound = false;
     private bool isFailed = false;
 
+    private string conditionsInput = string.Empty;
+    private bool isUpdated = false;
 
-    // Search for a patient by name or ID
+
     private void SearchById()
     {
         // do nothing if button is clicked without providing id
@@ -82,6 +107,7 @@ else if (isInvalidName)
         {
             searchedPatient = patient;
             isFound = true;
+            searchName = string.Empty;
         }
         else    // patient does not exist
         {
@@ -108,6 +134,7 @@ else if (isInvalidName)
         {
             searchedPatient = patient;
             isFound = true;
+            searchId = null;
         }
         else    // patient does not exist
         {
@@ -131,6 +158,42 @@ else if (isInvalidName)
         // Regular expression to allow only letters and spaces
         var regex = new System.Text.RegularExpressions.Regex("^[\\p{L} ]*$");
         return regex.IsMatch(name);
+    }
+
+    private void AddConditions()
+    {
+        if (string.IsNullOrEmpty(conditionsInput))
+        {
+            return; // do nothing if no condition is entered
+        }
+
+        // add new conditions
+        var newConditions = conditionsInput
+                            .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                            .Select(c => c.Trim())  // Trim spaces around each condition
+                            .Where(c => !searchedPatient.Conditions.Contains(c)) // Avoid adding duplicates
+                            .ToList();
+
+        searchedPatient.Conditions.AddRange(newConditions);
+
+        // clear input field
+        conditionsInput = string.Empty;
+        isUpdated = true;
+    }
+
+    private void DeleteConditions()
+    {
+        if (string.IsNullOrEmpty(conditionsInput))
+        {
+            return; // do nothing if no condition is entered
+        }
+
+        // remove condition
+        searchedPatient.Conditions.Remove(conditionsInput.Trim());
+
+        // clear input field
+        conditionsInput = string.Empty;
+        isUpdated = true;
     }
 
 }

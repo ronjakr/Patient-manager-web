@@ -8,17 +8,40 @@
 <p>Enter the ID of the patient to be deleted </p>
 
 <input type="number" @bind="patientId" placeholder="Patient ID"/>
-<button @onclick="DeletePatientById">Delete Patient</button>
-
+<button type="submit" @onclick="DeletePatientById">Delete Patient</button>
+<button type="submit" @onclick="ClearInput">Clear</button>
 
 @if (isDeleted)
 {
-    <h4>Deleted patient:</h4>
-    <p>ID: @deletedPatient.Id</p>
-    <p>Name: @deletedPatient.Name</p>
-    <p>Date of Birth: @deletedPatient.DateOfBirth.ToString("dd/MM/yyyy")</p>
-    <p>Age: @patientService.CalculateAge(deletedPatient.DateOfBirth)</p>
-    <p>Conditions: @string.Join(", ", deletedPatient.Conditions)</p>
+    <div class="mt-5">
+        <h4>Deleted patient:</h4>
+        <table class="table">
+        <thead>
+            <tr>
+                <th>Patient ID</th>
+                <th>Name</th>
+                <th>Date of Birth</th>
+                <th>Age</th>
+                <th>Conditions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@deletedPatient.Id</td>
+                <td>@deletedPatient.Name</td>
+                <p>Date of Birth: @deletedPatient.DateOfBirth.ToString("dd/MM/yyyy")</p>
+                <td>@patientService.CalculateAge(deletedPatient.DateOfBirth)</td>
+                <td>@string.Join(", ", deletedPatient.Conditions)</td>
+            </tr>
+        </tbody>
+        </table>
+        @* <h4>Deleted patient:</h4>
+        <p>ID: @deletedPatient.Id</p>
+        <p>Name: @deletedPatient.Name</p>
+        <p>Date of Birth: @deletedPatient.DateOfBirth.ToString("dd/MM/yyyy")</p>
+        <p>Age: @patientService.CalculateAge(deletedPatient.DateOfBirth)</p>
+        <p>Conditions: @string.Join(", ", deletedPatient.Conditions)</p> *@
+    </div>
 }
 
 else if (isFailed)
@@ -53,5 +76,11 @@ else if (isFailed)
         {
             isFailed = true;
         }
+    }
+
+    private void ClearInput()
+    {
+        patientId = null;
+        isDeleted = false;
     }
 }
