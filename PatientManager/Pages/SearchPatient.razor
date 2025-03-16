@@ -6,17 +6,23 @@
 <h3>Search for Patient by ID or Name</h3>
 <p> </p>
 
-<p>Search for pasient by entering pasient's ID</p>
-<input type="number" @bind="searchId" placeholder="Patient ID"/>
-<button style="margin-bottom: 30px;" @onclick="SearchById">Search</button>
+<div class="search-container"> 
+    <div class="search-item mb-5">
+        <p>Search for pasient by entering pasient's ID</p>
+        <input type="number" @bind="searchId" placeholder="ID"/>
+        <button @onclick="SearchById">Search</button>
+    </div>
 
-<p>Search for pasient by entering pasient's name</p>
-<input type="string" @bind="searchName" placeholder="Patient Name"/>
-<button style="margin-bottom: 30px;" @onclick="SearchByName">Search</button>
+    <div class="search-item mb-5">
+        <p>Search for pasient by entering pasient's name</p>
+        <input type="string" @bind="searchName" placeholder="Name"/>
+        <button @onclick="SearchByName">Search</button>
+    </div>
 
-<p> </p>
-<button @onclick="ClearSearch">Clear Search</button>
-
+    <div class="search-item mb-5">
+        <button @onclick="ClearSearch">Clear Search</button>
+    </div>
+</div>
 
 @if (isFound)
 {
