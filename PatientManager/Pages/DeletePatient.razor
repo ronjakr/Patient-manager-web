@@ -13,12 +13,14 @@
 
 @if (isDeleted)
 {
-    <h4>deleted patient:</h4>
+    <h4>Deleted patient:</h4>
+    <p>ID: @deletedPatient.Id</p>
     <p>Name: @deletedPatient.Name</p>
     <p>Date of Birth: @deletedPatient.DateOfBirth.ToString("dd/MM/yyyy")</p>
     <p>Age: @patientService.CalculateAge(deletedPatient.DateOfBirth)</p>
     <p>Conditions: @string.Join(", ", deletedPatient.Conditions)</p>
 }
+
 else if (isFailed)
 {
     <p style="color: red;">Patient not found. Please check the ID and try again.</p>

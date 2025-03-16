@@ -1,31 +1,32 @@
-@* @page "/search-patient"
+@page "/search-patient"
 @using PatientManager.Services
 @using PatientManager.Models
 @inject PatientService patientService
 
-<h3>Search Patients</h3>
+<h3>Search for Patient by ID or Name</h3>
+<p> </p>
 
-<div class="mb-3">
-    <label for="searchByName" class="form-label">Search by Name:</label>
-    <InputText id="searchByName" class="form-control" @bind-Value="searchName" />
-</div>
+<p>Search for pasient by entering pasient's ID</p>
+<input type="number" @bind="searchId" placeholder="Patient ID"/>
+<button style="margin-bottom: 30px;" @onclick="SearchById">Search</button>
 
-<div class="mb-3">
-    <label for="searchById" class="form-label">Search by ID:</label>
-    <InputNumber id="searchById" class="form-control" @bind-Value="searchId" />
-</div>
+<p>Search for pasient by entering pasient's name</p>
+<input type="string" @bind="searchName" placeholder="Patient Name"/>
+<button style="margin-bottom: 30px;" @onclick="SearchByName">Search</button>
 
-<button class="btn btn-primary" @onclick="SearchPatients">Search</button>
+<p> </p>
+<button @onclick="ClearSearch">Clear Search</button>
 
-<h4>Search Result:</h4>
 
-@if (searchedPatient != null)
+@if (isFound)
 {
+    <h4>Search Result:</h4>
     <table class="table">
         <thead>
             <tr>
                 <th>Patient ID</th>
                 <th>Name</th>
+                <th>Date of Birth</th>
                 <th>Age</th>
                 <th>Conditions</th>
             </tr>
@@ -34,39 +35,96 @@
             <tr>
                 <td>@searchedPatient.Id</td>
                 <td>@searchedPatient.Name</td>
+                <p>Date of Birth: @searchedPatient.DateOfBirth.ToString("dd/MM/yyyy")</p>
                 <td>@patientService.CalculateAge(searchedPatient.DateOfBirth)</td>
                 <td>@string.Join(", ", searchedPatient.Conditions)</td>
             </tr>
         </tbody>
     </table>
+    
 }
-else
+else if (isFailed)
 {
-    <p>No patient found matching your search.</p>
+    <p style="color: red;">No patient found matching your search.</p>
+}
+else if (isInvalidName)
+{
+    <p style="color: red;">Invalid name format. Please enter a valid name (letters and spaces only).</p>
 }
 
 @code {
     private string searchName = string.Empty;
-    private int searchId;
-    private Patient searchedPatient;
+    private int? searchId = null;
+    private Patient searchedPatient = null;
+    private bool isInvalidName = false;
+
+    private bool isFound = false;
+    private bool isFailed = false;
+
 
     // Search for a patient by name or ID
-    private void SearchPatients()
+    private void SearchById()
     {
-        if (!string.IsNullOrWhiteSpace(searchName))
+        // do nothing if button is clicked without providing id
+        if (!searchId.HasValue)
         {
-            // Search by name
-            searchedPatient = patientService.GetPatientByName(searchName);
+            return;
         }
-        else if (searchId > 0)
+
+        var patient = patientService.GetPatientById(searchId.Value);
+        if (patient != null)
         {
-            // Search by ID
-            searchedPatient = patientService.GetPatientById(searchId);
+            searchedPatient = patient;
+            isFound = true;
         }
-        else
+        else    // patient does not exist
         {
-            // If no search criteria is provided, clear the result
-            searchedPatient = null;
+            isFailed = true;
+        }
+
+    }
+
+    private void SearchByName()
+    {
+        // do nothing if button is clicked without providing id
+        if (string.IsNullOrEmpty(searchName))
+        {
+            return;
+        }
+        if (!IsValidName(searchName))
+        {
+            isInvalidName = true;
+            return;
+        }
+
+        var patient = patientService.GetPatientByName(searchName);
+        if (patient != null)
+        {
+            searchedPatient = patient;
+            isFound = true;
+        }
+        else    // patient does not exist
+        {
+            isFailed = true;
         }
     }
-} *@
+
+    private void ClearSearch()
+    {
+        searchId = null;
+        searchName = string.Empty;
+        searchedPatient = null;
+        isFound = false;
+        isFailed = false;
+        isInvalidName = false;
+
+    }
+
+    private bool IsValidName(string name)
+    {
+        // Regular expression to allow only letters and spaces
+        var regex = new System.Text.RegularExpressions.Regex("^[\\p{L} ]*$");
+        return regex.IsMatch(name);
+    }
+
+}

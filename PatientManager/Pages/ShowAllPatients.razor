@@ -10,6 +10,7 @@
         <tr>
             <th>Patient ID</th>
             <th>Name</th>
+            <th>Date of Birth</th>
             <th>Age</th>
             <th>Conditions</th>
         </tr>
@@ -20,6 +21,7 @@
             <tr>
                 <td>@patient.Id</td>
                 <td>@patient.Name</td>
+                <td>@patient.DateOfBirth</td>
                 <td>@patientService.CalculateAge(patient.DateOfBirth)</td>
                 <td>@string.Join(", ", patient.Conditions)</td>
             </tr>
